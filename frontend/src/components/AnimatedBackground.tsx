@@ -85,49 +85,77 @@ export function AnimatedBackground() {
     class Pulse {
       particleIndex: number
       life: number
+      delay: number
+      hasTriggered: boolean
 
-      constructor(particleIndex: number) {
+      constructor(particleIndex: number, delay: number = 0) {
         this.particleIndex = particleIndex
         this.life = 1.0
+        this.delay = delay
+        this.hasTriggered = false
       }
 
       update() {
-        this.life -= 0.02
+        if (this.delay > 0) {
+          this.delay -= 0.016 // ~60fps
+          return
+        }
+        this.life -= 0.015 // Slower decay for smoother animation
       }
 
       isDead() {
-        return this.life <= 0
+        return this.life <= 0 && this.delay <= 0
       }
 
-      draw(l: Particle[]) {
+      draw(l: Particle[], f: Pulse[]) {
         const p = l[this.particleIndex]
         if (!p) return
+        
+        // Don't draw if still delayed
+        if (this.delay > 0) return
+        
         const { x, y } = p
         const life = this.life
 
-        // 1. Expanding ring — radius grows as life decreases
-        const ringRadius = (1 - life) * 80
+        // Trigger propagation to nearby nodes when pulse starts (only once)
+        if (!this.hasTriggered && life > 0.95) {
+          this.hasTriggered = true
+          for (let k = 0; k < l.length; k++) {
+            if (k === this.particleIndex) continue
+            const other = l[k]
+            const dx = other.x - x
+            const dy = other.y - y
+            const dist = Math.sqrt(dx * dx + dy * dy)
+            if (dist < 150) {
+              // Create delayed pulse based on distance
+              const delayAmount = (dist / 150) * 0.3 // 0 to 0.3 seconds delay
+              f.push(new Pulse(k, delayAmount))
+            }
+          }
+        }
+
+        // 1. Expanding ring — radius grows as life decreases (slower)
+        const ringRadius = (1 - life) * 100 // Increased from 80 for more dramatic effect
         ctx.save()
         ctx.shadowColor = 'rgba(0,180,255,0.9)'
-        ctx.shadowBlur  = 16
+        ctx.shadowBlur  = 20 // Increased blur for softer glow
         ctx.beginPath()
         ctx.arc(x, y, ringRadius + p.radius, 0, Math.PI * 2)
-        ctx.strokeStyle = `rgba(0,200,255,${life * 0.9})`
-        ctx.lineWidth   = 2.5
+        ctx.strokeStyle = `rgba(0,200,255,${life * 0.85})`
+        ctx.lineWidth   = 3
         ctx.stroke()
         ctx.restore()
 
-        // Second inner ring
+        // Second inner ring with smooth fade
         if (ringRadius > 10) {
           ctx.beginPath()
-          ctx.arc(x, y, (ringRadius * 0.5) + p.radius, 0, Math.PI * 2)
-          ctx.strokeStyle = `rgba(100,220,255,${life * 0.5})`
-          ctx.lineWidth   = 1.2
+          ctx.arc(x, y, (ringRadius * 0.6) + p.radius, 0, Math.PI * 2)
+          ctx.strokeStyle = `rgba(100,220,255,${life * 0.6})`
+          ctx.lineWidth   = 1.5
           ctx.stroke()
         }
 
-        // 2. Electric bolt lines to every particle within 150px
-        //    opacity = life * (1 - distance/150)  — exact williamlin.io formula
+        // 2. Electric bolt lines to every particle within 150px - smooth fade
         for (let k = 0; k < l.length; k++) {
           if (k === this.particleIndex) continue
           const other = l[k]
@@ -135,26 +163,26 @@ export function AnimatedBackground() {
           const dy    = other.y - y
           const dist  = Math.sqrt(dx * dx + dy * dy)
           if (dist < 150) {
-            const lineAlpha = life * (1 - dist / 150)
+            const lineAlpha = life * (1 - dist / 150) * 0.8 // Slightly reduced for smoother look
 
             ctx.save()
-            ctx.shadowColor = 'rgba(0,180,255,0.8)'
-            ctx.shadowBlur  = 12
+            ctx.shadowColor = 'rgba(0,180,255,0.7)'
+            ctx.shadowBlur  = 15
 
-            // Outer glow stroke
+            // Outer glow stroke - wider and softer
             ctx.beginPath()
             ctx.moveTo(x, y)
             ctx.lineTo(other.x, other.y)
-            ctx.strokeStyle = `rgba(0,160,255,${lineAlpha * 0.7})`
-            ctx.lineWidth   = 4
+            ctx.strokeStyle = `rgba(0,160,255,${lineAlpha * 0.5})`
+            ctx.lineWidth   = 5
             ctx.stroke()
 
             // Bright core stroke
             ctx.beginPath()
             ctx.moveTo(x, y)
             ctx.lineTo(other.x, other.y)
-            ctx.strokeStyle = `rgba(160,230,255,${lineAlpha})`
-            ctx.lineWidth   = 1.5
+            ctx.strokeStyle = `rgba(160,230,255,${lineAlpha * 0.9})`
+            ctx.lineWidth   = 2
             ctx.stroke()
 
             ctx.restore()
@@ -245,7 +273,7 @@ export function AnimatedBackground() {
         if (f[i].isDead()) {
           f.splice(i, 1)
         } else {
-          f[i].draw(l)
+          f[i].draw(l, f)
         }
       }
 
@@ -258,15 +286,33 @@ export function AnimatedBackground() {
       mouse = { x: e.clientX - rect.left, y: e.clientY - rect.top }
     }
 
-    // Exact replica of original:
-    //   l.push(new s(e.offsetX, e.offsetY))
-    //   f.push(new u(l.length - 1))
+    // Click creates a new particle and triggers propagating pulse
     function handleClick(e: MouseEvent) {
       const rect = canvas.getBoundingClientRect()
       const ox = e.clientX - rect.left
       const oy = e.clientY - rect.top
-      l.push(new Particle(ox, oy))
-      f.push(new Pulse(l.length - 1))
+      
+      // Find nearest existing particle to click
+      let nearest = -1
+      let minDist = Infinity
+      for (let i = 0; i < l.length; i++) {
+        const dx = l[i].x - ox
+        const dy = l[i].y - oy
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist < minDist && dist < 50) { // Within 50px
+          minDist = dist
+          nearest = i
+        }
+      }
+      
+      // If clicked near existing particle, pulse from it
+      if (nearest !== -1) {
+        f.push(new Pulse(nearest, 0))
+      } else {
+        // Otherwise create new particle at click position
+        l.push(new Particle(ox, oy))
+        f.push(new Pulse(l.length - 1, 0))
+      }
     }
 
     window.addEventListener('mousemove', handleMouseMove)
