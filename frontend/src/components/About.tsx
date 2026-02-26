@@ -109,9 +109,9 @@ export function About() {
                 viewport={{ once: true }}
                 className="relative pl-6 border-l-4 border-blue-500"
               >
-                Hello! I&apos;m <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Aritra Dutta</span>, a passionate Software Engineer currently working at 
+                Hello! I&apos;m <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Aritra Dutta</span>, a passionate Backend & Microservices Engineer at 
                 <span className="font-semibold text-blue-600 dark:text-blue-400"> Tata Consultancy Services (TCS)</span> 
-                in Bhubaneswar, Odisha. At 23, I&apos;ve already embarked on an exciting journey in the world of technology.
+                in Bhubaneswar, India. At 23, I&apos;ve already embarked on an exciting journey building enterprise-grade systems.
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -120,9 +120,9 @@ export function About() {
                 viewport={{ once: true }}
                 className="relative pl-6 border-l-4 border-purple-500"
               >
-                Currently, I&apos;m undergoing comprehensive training in Thiruvananthapuram, Kerala, where I&apos;m diving deep into 
-                <span className="font-semibold text-purple-600 dark:text-purple-400"> C++, MVC architecture, SQL, and PROC</span>. My focus extends to Java Full Stack development, building RESTful APIs 
-                using Java, Spring Boot, and Hibernate.
+                Currently, I&apos;m building enterprise microservices for the Ultimatix platform, working with 
+                <span className="font-semibold text-purple-600 dark:text-purple-400"> Java 17, Spring Boot 3, PostgreSQL, Angular v20, and Azure PaaS</span>. I&apos;ve led critical production migrations, 
+                version upgrades, and achieved 20-30x performance improvements through query optimization.
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
