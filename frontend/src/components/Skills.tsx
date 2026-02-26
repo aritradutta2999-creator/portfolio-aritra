@@ -50,6 +50,7 @@ const skillCategories = [
 ]
 
 const certifications = [
+  'TCS DEEP Ninja Certified DevOps Engineer - TCS (Docker, Jenkins CI/CD, Cloud Deployment)',
   'Problem Solving (Intermediate) - HackerRank',
   'The Complete Python Pro Bootcamp - Udemy',
   'Object Oriented Programming in Java - Coursera',
@@ -172,9 +173,9 @@ export function Skills() {
               <div className="text-sm text-gray-500 dark:text-gray-500 mt-1">3-Star</div>
             </div>
             <div className="text-center bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-8 rounded-2xl">
-              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">500+</div>
+              <div className="text-4xl font-bold text-green-600 dark:text-green-400 mb-2">600+</div>
               <div className="text-gray-600 dark:text-gray-400 font-medium">Problems Solved</div>
-              <div className="text-sm text-gray-500 dark:text-gray-500 mt-1">Multiple Platforms</div>
+              <div className="text-sm text-gray-500 dark:text-gray-500 mt-1">LeetCode & Codeforces</div>
             </div>
             <div className="text-center bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 p-8 rounded-2xl">
               <div className="text-4xl font-bold text-orange-600 dark:text-orange-400 mb-2">1046</div>

@@ -5,11 +5,11 @@ import { GraduationCap, MapPin, Calendar, Award, Trophy, Code2, Target, Sparkles
 
 const educationData = [
   {
-    degree: 'B.Tech in ECE',
-    institution: 'WBTU - College of Engineering',
+    degree: 'B.Tech in Electronics & Communication Engineering',
+    institution: 'Maulana Abul Kalam Azad University of Technology (MAKAUT)',
     location: 'Kolkata, WB',
-    duration: 'June 2024',
-    grade: 'CGPA: 8.67',
+    duration: '2020 - 2024',
+    grade: 'CGPA: 8.79/10',
     icon: GraduationCap
   },
   {
@@ -31,8 +31,9 @@ const educationData = [
 ]
 
 const achievements = [
+  'TCS DEEP Ninja Certified DevOps Engineer – specialized in Docker, Jenkins CI/CD, and cloud deployment',
+  'Solved 600+ algorithmic problems across LeetCode and Codeforces',
   'LeetCode Weekly Contest ranking 3556 with max rating 1750',
-  'Solved 500+ problems across LeetCode, CodeForces, and CodeChef',
   'Secured Global Rank 1046 in CodeForces Round 967 div 2',
   'CodeChef Rating 1604 (3-star)',
   'Solved over 100 problems in CSES CP sheet',
@@ -132,7 +133,7 @@ export function About() {
                 className="relative pl-6 border-l-4 border-pink-500"
               >
                 What drives me is my love for <span className="font-semibold text-pink-600 dark:text-pink-400">
-                competitive programming</span> and problem-solving. With over <span className="font-bold">500+ problems</span> solved across various platforms 
+                competitive programming</span> and problem-solving. With over <span className="font-bold">600+ problems</span> solved across LeetCode and Codeforces 
                 and a LeetCode rating of <span className="font-bold text-green-600 dark:text-green-400">1750</span>, I constantly challenge myself to think algorithmically and write clean, 
                 efficient code.
               </motion.p>
